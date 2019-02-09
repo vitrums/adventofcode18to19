@@ -1,14 +1,10 @@
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class Node private constructor(val number: Int) {
-    lateinit var l: Node
-    lateinit var r: Node
+class Node (val number: Int) {
+    var l: Node = this
+    var r: Node = this
 
-    public constructor() : this(0) {
-        l = this
-        r = this
-    }
 
     fun add(n: Int) : Pair<Node, Int> {
         if (n % 23 == 0) {
@@ -39,16 +35,16 @@ fun main(args: Array<String>) {
         val nplayers = stream[0]
         val nmarbles = stream[1]
 
-        var cur = Node()
+        var cur = Node(0)
         var curPlayer = -1
-        val scores = IntArray(nplayers)
+        val scores = LongArray(nplayers)
         for (i in 1..nmarbles) {
             curPlayer = (++ curPlayer) % nplayers
             val (node, score) = cur.add(i)
 
-            scores[curPlayer] += score
-            if (score == nmarbles)
-                break
+            scores[curPlayer] += score.toLong()
+//            if (score == nmarbles)
+//                break
             cur = node
         }
 
