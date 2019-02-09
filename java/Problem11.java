@@ -3,6 +3,7 @@ package adventofcode;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class Problem11 {
   static class Solver {
@@ -18,6 +19,7 @@ public class Problem11 {
     class AugPos {
       Pos pos;
       long power;
+      int squareLen;
       Optional<Long> augPower;
 
       AugPos(Pos pos, long power) {
@@ -25,7 +27,7 @@ public class Problem11 {
         this.power = power;
         this.augPower = Optional.empty();
       }
-
+      
       long calcPower() {
         return doCalcPartTwoPower();
       }
@@ -58,13 +60,11 @@ public class Problem11 {
           long maxSum = Long.MIN_VALUE;
           int maxLen = Math.min(n - pos.x, n - pos.y);
           for (int len = 1; len < maxLen; ++len) {
-            long sum = 0;
-            for (int x = pos.x; x < pos.x + len; ++x) {
-              for (int y = pos.y; y < pos.y + len; ++y) {
-                sum += grid[x][y].power;
-              }
+            long tmp = calc(pos.x, pos.y, len);
+            if (maxSum < tmp) {
+              squareLen = len;
+              maxSum = tmp;
             }
-            maxSum = Long.max(sum, maxSum);
           }
 
           augPower = Optional.of(maxSum);
@@ -72,15 +72,35 @@ public class Problem11 {
 
         return augPower.get();
       }
+      
+      long calc(int topx, int topy, int len) {
+        Long res = sums[pos.x][pos.y][len];
+        if (res == null) {
+          if (len == 1) {
+            res = grid[topx][topy].power;
+          } else {
+            long rest = 0;
+            rest += IntStream.range(topx, topx + len).mapToLong(it -> grid[it][topy + len - 1].power).sum();
+            rest += IntStream.range(topy, topy + len).mapToLong(it -> grid[topx + len - 1][it].power).sum();
+            res = calc(topx, topy, len - 1) + rest -  grid[topx + len - 1][topy + len - 1].power;
+          }
+          
+          sums[pos.x][pos.y][len] = res;
+        }
+        
+        return res;
+      }
     }
 
     int n;
     int serial;
     AugPos[][] grid;
+    Long [][][] sums;
 
     Solver() {
       this.n = 300;
       this.grid = new AugPos[n][n];
+      this.sums = new Long[n][n][n];
     }
 
     void solve() throws IOException {
@@ -101,7 +121,7 @@ public class Problem11 {
 
       AugPos res = Arrays.stream(grid).flatMap(Arrays::stream)
           .max((a, b) -> Long.compare(a.calcPower(), b.calcPower())).get();
-      System.out.printf("(%d, %d) %d%n", res.pos.x + 1, res.pos.y + 1, res.calcPower());
+      System.out.printf("(%d, %d) %d %d%n", res.pos.x + 1, res.pos.y + 1, res.calcPower(), res.squareLen);
     }
   }
 
