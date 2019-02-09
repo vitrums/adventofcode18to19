@@ -33,14 +33,14 @@ fun main(args: Array<String>) {
     println(points.size)
 
 
-    var prevw = 1000000
+    var sec = 0
     while (true) {
         val yy = points.map { it.y }
         val width = yy.max ()!! - yy.min() !!
-        println(width)
+        println(sec)
         if (width == 9) break
-        prevw = width
         points.forEach { it.next()}
+        sec++
     }
 
     points.sortBy { it.x }
