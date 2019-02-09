@@ -4,18 +4,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
-public class Problem10 {
+public class Problem11 {
   static class Solver {
-    static class Pair<A, B> {
-      A fst;
-      B snd;
-
-      Pair(A fst, B snd) {
-        this.fst = fst;
-        this.snd = snd;
-      }
-    }
-
     static class Pos {
       int x, y;
 
@@ -37,6 +27,11 @@ public class Problem10 {
       }
 
       long calcPower() {
+        return doCalcPartTwoPower();
+      }
+
+      // Part One solution
+      long doCalcPartOnePower() {
         // Cache
         if (!augPower.isPresent()) {
           long sum = 0;
@@ -55,6 +50,28 @@ public class Problem10 {
 
         return augPower.get();
       }
+
+      // Part Two solution
+      long doCalcPartTwoPower() {
+        // Cache
+        if (!augPower.isPresent()) {
+          long maxSum = Long.MIN_VALUE;
+          int maxLen = Math.min(n - pos.x, n - pos.y);
+          for (int len = 1; len < maxLen; ++len) {
+            long sum = 0;
+            for (int x = pos.x; x < pos.x + len; ++x) {
+              for (int y = pos.y; y < pos.y + len; ++y) {
+                sum += grid[x][y].power;
+              }
+            }
+            maxSum = Long.max(sum, maxSum);
+          }
+
+          augPower = Optional.of(maxSum);
+        }
+
+        return augPower.get();
+      }
     }
 
     int n;
@@ -69,7 +86,7 @@ public class Problem10 {
     void solve() throws IOException {
       // Scanner sc = new Scanner(Files.find(Paths.get("./src/main/resources/adventofcode/input"),
       // 1,
-      // (a, b) -> a.getFileName().toString().equals("10.txt")).findFirst().get());
+      // (a, b) -> a.getFileName().toString().equals("11.txt")).findFirst().get());
       //
       // System.out.println(sc.nextLine());
       serial = 5153;
