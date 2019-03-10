@@ -23,16 +23,12 @@ inline operator fun <reified T: Enum<T>> T.plus(offset: Int) : T {
     return vv[newIndex]
 }
 
-data class Cart(var row: Int, var col: Int, var dir: Dir) : Comparable<Cart> {
-    override fun compareTo(other: Cart): Int = (row - other.row).let {
-        if (it == 0) (col - other.col)
-        else it
-    }
-
+data class Cart(var row: Int, var col: Int, var dir: Dir){
+    var dead = 0
     var turn: Turn = Turn.LEFT
 }
 fun main(args: Array<String>) {
-    val lines = Files.readAllLines(Paths.get("input/13x.txt"))
+    val lines = Files.readAllLines(Paths.get("input/13.txt"))
     val carts = mutableListOf<Cart>()
 
     val a  = Array(lines.size) { row -> lines[row].toCharArray().apply {
@@ -63,9 +59,12 @@ fun main(args: Array<String>) {
     val set = mutableSetOf<Pair<Int, Int>>()
     for (c in carts) set.add(c.row to c.col)
 
-    while (true) {
-        carts.sort()
+    var restCarts = carts.size
+    outer@while (restCarts > 1) {
+        carts.sortWith(compareBy ({it.dead}, {it.row}, {it.col} ) )
         for (c in carts) {
+            if (c.dead > 0) continue
+
             set.remove(c.row to c.col)
 
             c.row += c.dir.r
@@ -73,8 +72,18 @@ fun main(args: Array<String>) {
 
             if (!set.add(c.row to c.col)) {
                 println("${c.col},${c.row}")
-                return
+                restCarts -= 2
+
+                carts.filter { it.row == c.row && it.col == c.col }.forEach {
+                    it.dead = 1
+                }
+                set.remove(c.row to c.col)
+//                return
             }
+
+            if (restCarts == 1)
+                break@outer
+
 
             when (a[c.row][c.col]) {
                 '+' -> {
@@ -99,4 +108,8 @@ fun main(args: Array<String>) {
             }
         }
     }
+
+    val alive = carts.single { it.dead == 0 }
+//    println(alive)
+    println("Alive: ${alive.col},${alive.row}")
 }
