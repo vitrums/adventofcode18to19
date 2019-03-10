@@ -32,7 +32,7 @@ data class Cart(var row: Int, var col: Int, var dir: Dir) : Comparable<Cart> {
     var turn: Turn = Turn.LEFT
 }
 fun main(args: Array<String>) {
-    val lines = Files.readAllLines(Paths.get("input/13.txt"))
+    val lines = Files.readAllLines(Paths.get("input/13x.txt"))
     val carts = mutableListOf<Cart>()
 
     val a  = Array(lines.size) { row -> lines[row].toCharArray().apply {
@@ -72,7 +72,7 @@ fun main(args: Array<String>) {
             c.col += c.dir.c
 
             if (!set.add(c.row to c.col)) {
-                println("${c.row},${c.col}")
+                println("${c.col},${c.row}")
                 return
             }
 
