@@ -5,7 +5,7 @@ import java.nio.file.Paths
 fun main(args: Array<String>) {
     val l = Files.readAllLines(Paths.get("input/14.txt"))[0].toCharArray().toMutableList()
     val initial = l.size
-    val offset = l.joinToString("").toInt()
+    val offset = 190221
     println(offset)
     val n = 10
     var a = 0
