@@ -1,6 +1,7 @@
 package adventofcode;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -17,6 +18,16 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Problem15 {
+  static PrintWriter writer;
+  
+  static void print(CharSequence s) {
+    writer.print(s);
+  }
+
+  static void println(CharSequence s) {
+    print(s + "\n");
+  }
+
   static class Solver {
     static class PointXY {
       private static PointXY of(int x, int y) {
@@ -151,11 +162,16 @@ public class Problem15 {
     // Player's turn: if we belong to inRange map => attack
     // else search: waves of length 1, 2... until wave N, which meats ? in inRange
 
-    Solver() {}
+    Solver() {
 
-    void readInput() throws IOException {
-      Scanner sc = new Scanner(Files.find(Paths.get("./src/main/resources/adventofcode/input"), 1,
-          (a, b) -> a.getFileName().toString().equals("15.txt")).findFirst().get());
+    }
+
+    void readInput(String fileName) throws IOException {
+      Scanner sc =
+          new Scanner(Files
+              .find(Paths.get("./src/main/resources/adventofcode/input"), 1,
+                  (a, b) -> a.getFileName().toString().equals(fileName + ".txt"))
+              .findFirst().get());
 
       List<int[]> rows = new ArrayList<>();
       while (sc.hasNextLine()) {
@@ -168,8 +184,9 @@ public class Problem15 {
     }
 
     int turn = 0;
-    void solve() throws IOException {
-      readInput();
+
+    void solve(String fileName, int res) throws IOException {
+      readInput(fileName);
 
       cells = new Cell[yn + 2][xn + 2];
       for (int y = 0; y < yn + 2; ++y) {
@@ -201,7 +218,7 @@ public class Problem15 {
             turn--;
             break;
           }
-          
+
           class AI {
             int opponentType;
             int width;
@@ -310,38 +327,53 @@ public class Problem15 {
           }
         }
 
-        System.out.printf("Turn %d%n", turn);
-        for (int y = 0; y < a.length; ++y) {
-          StringBuilder sb = new StringBuilder();
-          for (int x = 0; x < a[y].length; ++x) {
-            char c;
-            switch (a[y][x]) {
-              case E:
-                c = 'E';
-                break;
-              case G:
-                c = 'G';
-                break;
-              case SPACE:
-                c = '.';
-                break;
-              case WALL:
-                c = '#';
-                break;
-              default:
-                throw new AssertionError("Unknown symbol.");
+        if (res == -1) {
+          print(String.format("Turn %d%n", turn));
+          for (int y = 0; y < a.length; ++y) {
+            StringBuilder mapSb = new StringBuilder();
+            for (int x = 0; x < a[y].length; ++x) {
+              char c;
+              switch (a[y][x]) {
+                case E:
+                  c = 'E';
+                  break;
+                case G:
+                  c = 'G';
+                  break;
+                case SPACE:
+                  c = '.';
+                  break;
+                case WALL:
+                  c = '#';
+                  break;
+                default:
+                  throw new AssertionError("Unknown symbol.");
+              }
+              mapSb.append(c);
             }
-            sb.append(c);
+            print(mapSb.append("   "));
+
+            StringBuilder hpSb = new StringBuilder();
+            for (int x = 1; x < cells[y + 1].length - 1; ++x) {
+              Cell cell = cells[y + 1][x + 1];
+              if (cell.p.isPresent()) {
+                hpSb.append(cell.p.get().type == E ? 'E' : 'G')
+                    .append(String.format("%-6s", String.format("(%d) ", cell.p.get().hp)));
+              }
+            }
+            println(hpSb);
           }
-          System.out.println(sb);
+          // System.out.println(cells[5][6].p.isPresent() ? cells[5][6].p.get().hp + "" : "dead");
+          println("");
         }
-//        System.out.println(cells[5][6].p.isPresent() ? cells[5][6].p.get().hp + "" : "dead");
-        System.out.println();
-        System.out.println();
       }
-      
+
       int sumHpOfAlive = pSorted.stream().collect(Collectors.summingInt(p -> p.hp));
-      System.out.printf("Outcome: %d * %d = %d", turn, sumHpOfAlive, turn * sumHpOfAlive);
+      System.out.printf("Outcome: %d * %d = %d. (res=%d)%n", turn, sumHpOfAlive,
+          turn * sumHpOfAlive, res);
+      if (res > 0 && turn * sumHpOfAlive != res) {
+        throw new AssertionError(String.format("Test %s failed!", fileName));
+      }
     }
 
     static List<PointXY> readingOrder;
@@ -370,6 +402,16 @@ public class Problem15 {
         return pp.isPresent() && pp.get().type == opponentType;
       }).map(pt -> cells[p.y + pt.y + 1][p.x + pt.x + 1].p.get())
           .sorted((p1, p2) -> Integer.compare(p1.hp, p2.hp)).findFirst();
+
+      // if (opp.isPresent()) {
+      // if (!opp.get().equals(readingOrder.stream().filter(dxdy -> {
+      // Optional<Player> pp = cells[p.y + dxdy.y + 1][p.x + dxdy.x + 1].p;
+      // return pp.isPresent() && pp.get().type == opponentType && pp.get().hp == opp.get().hp;
+      // }).map(pt -> cells[p.y + pt.y + 1][p.x + pt.x + 1].p.get()).findFirst().get())) {
+      // throw new AssertionError("WTF?");
+      // }
+      // }
+
       return opp;
     }
 
@@ -405,8 +447,19 @@ public class Problem15 {
 
 
   public static void main(String[] args) {
-    try {
-      new Solver().solve();
+    try (PrintWriter r = new PrintWriter(Files
+        .find(Paths.get("./src/main/resources/adventofcode/output"), 1,
+            (a, b) -> a.getFileName().toString().equals("15out.txt"))
+        .findFirst().get().toFile())) {
+      writer = r;
+      
+      new Solver().solve("15a", 27730);
+      new Solver().solve("15b", 36334);
+      new Solver().solve("15c", 39514);
+      new Solver().solve("15d", 27755);
+      new Solver().solve("15e", 28944);
+      new Solver().solve("15f", 18740);
+      new Solver().solve("15", -1);
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
