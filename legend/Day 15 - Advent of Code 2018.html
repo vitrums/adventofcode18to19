@@ -87,7 +87,7 @@ If you'd like to hang out, I'm @ericwastl on Twitter.
 
 -->
 <body>
-<header><div><h1 class="title-global"><a href="https://adventofcode.com/">Advent of Code</a></h1><nav><ul><li><a href="https://adventofcode.com/2018/about">[About]</a></li><li><a href="https://adventofcode.com/2018/events">[Events]</a></li><li><a href="https://teespring.com/adventofcode" target="_blank">[Shop]</a></li><li><a href="https://adventofcode.com/2018/settings">[Settings]</a></li><li><a href="https://adventofcode.com/2018/auth/logout">[Log Out]</a></li></ul></nav><div class="user">Aleksandr Ivanov <span class="star-count">22*</span></div></div><div><h1 class="title-event">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="title-event-wrap">/^</span><a href="https://adventofcode.com/2018">2018</a><span class="title-event-wrap">$/</span></h1><nav><ul><li><a href="https://adventofcode.com/2018">[Calendar]</a></li><li><a href="https://adventofcode.com/2018/support">[AoC++]</a></li><li><a href="https://adventofcode.com/2018/sponsors">[Sponsors]</a></li><li><a href="https://adventofcode.com/2018/leaderboard">[Leaderboard]</a></li><li><a href="https://adventofcode.com/2018/stats">[Stats]</a></li></ul></nav></div></header>
+<header><div><h1 class="title-global"><a href="https://adventofcode.com/">Advent of Code</a></h1><nav><ul><li><a href="https://adventofcode.com/2018/about">[About]</a></li><li><a href="https://adventofcode.com/2018/events">[Events]</a></li><li><a href="https://teespring.com/adventofcode" target="_blank">[Shop]</a></li><li><a href="https://adventofcode.com/2018/settings">[Settings]</a></li><li><a href="https://adventofcode.com/2018/auth/logout">[Log Out]</a></li></ul></nav><div class="user">Aleksandr Ivanov <span class="star-count">32*</span></div></div><div><h1 class="title-event">&nbsp;&nbsp;&nbsp;<span class="title-event-wrap">sub y{</span><a href="https://adventofcode.com/2018">2018</a><span class="title-event-wrap">}</span></h1><nav><ul><li><a href="https://adventofcode.com/2018">[Calendar]</a></li><li><a href="https://adventofcode.com/2018/support">[AoC++]</a></li><li><a href="https://adventofcode.com/2018/sponsors">[Sponsors]</a></li><li><a href="https://adventofcode.com/2018/leaderboard">[Leaderboard]</a></li><li><a href="https://adventofcode.com/2018/stats">[Stats]</a></li></ul></nav></div></header>
 
 <div id="sidebar">
 <div id="sponsor"><div class="quiet">Our <a href="https://adventofcode.com/2018/sponsors">sponsors</a> help make Advent of Code possible:</div><div class="sponsor"><a href="https://www.ainfosec.com/" target="_blank" onclick="if(ga)ga(&#39;send&#39;,&#39;event&#39;,&#39;sponsor&#39;,&#39;click&#39;,this.href);" rel="noopener">AIS</a> - Can You Hack It? Visit our site to take our challenge &amp; join our team!</div></div>
@@ -355,11 +355,85 @@ Outcome: 20 * 937 = <em>18740</em>
 </code></pre>
 <p><em>What is the outcome</em> of the combat described in your puzzle input?</p>
 </article>
-<p>To begin, <a href="https://adventofcode.com/2018/day/15/input" target="_blank">get your puzzle input</a>.</p>
-<form method="post" action="https://adventofcode.com/2018/day/15/answer"><input type="hidden" name="level" value="1"><p>Answer: <input type="text" name="answer" autocomplete="off"> <input type="submit" value="[Submit]"></p></form>
+<p>Your puzzle answer was <code>201638</code>.</p><article class="day-desc"><h2 id="part2">--- Part Two ---</h2><p>According to your calculations, the Elves are going to lose badly. Surely, you won't mess up the timeline too much if you give them <span title="See also: the plot of every Civilization game.">just a little advanced technology</span>, right?</p>
+<p>You need to make sure the Elves not only <em>win</em>, but also suffer <em>no losses</em>: even the death of a single Elf is unacceptable.</p>
+<p>However, you can't go too far: larger changes will be more likely to permanently alter spacetime.</p>
+<p>So, you need to <em>find the outcome</em> of the battle in which the Elves have the <em>lowest integer attack power</em> (at least <code>4</code>) that allows them to <em>win without a single death</em>. The Goblins always have an attack power of <code>3</code>.</p>
+<p>In the first summarized example above, the lowest attack power the Elves need to win without losses is <code>15</code>:</p>
+<pre><code>#######       #######
+#.G...#       #..E..#   E(158)
+#...EG#       #...E.#   E(14)
+#.#.#G#  --&gt;  #.#.#.#
+#..G#E#       #...#.#
+#.....#       #.....#
+#######       #######
+
+Combat ends after 29 full rounds
+Elves win with 172 total hit points left
+Outcome: 29 * 172 = <em>4988</em>
+</code></pre>
+<p>In the second example above, the Elves need only <code>4</code> attack power:</p>
+<pre><code>#######       #######
+#E..EG#       #.E.E.#   E(200), E(23)
+#.#G.E#       #.#E..#   E(200)
+#E.##E#  --&gt;  #E.##E#   E(125), E(200)
+#G..#.#       #.E.#.#   E(200)
+#..E#.#       #...#.#
+#######       #######
+
+Combat ends after 33 full rounds
+Elves win with 948 total hit points left
+Outcome: 33 * 948 = <em>31284</em>
+</code></pre>
+<p>In the third example above, the Elves need <code>15</code> attack power:</p>
+<pre><code>#######       #######
+#E.G#.#       #.E.#.#   E(8)
+#.#G..#       #.#E..#   E(86)
+#G.#.G#  --&gt;  #..#..#
+#G..#.#       #...#.#
+#...E.#       #.....#
+#######       #######
+
+Combat ends after 37 full rounds
+Elves win with 94 total hit points left
+Outcome: 37 * 94 = <em>3478</em>
+</code></pre>
+<p>In the fourth example above, the Elves need <code>12</code> attack power:</p>
+<pre><code>#######       #######
+#.E...#       #...E.#   E(14)
+#.#..G#       #.#..E#   E(152)
+#.###.#  --&gt;  #.###.#
+#E#G#G#       #.#.#.#
+#...#G#       #...#.#
+#######       #######
+
+Combat ends after 39 full rounds
+Elves win with 166 total hit points left
+Outcome: 39 * 166 = <em>6474</em>
+</code></pre>
+<p>In the last example above, the lone Elf needs <code>34</code> attack power:</p>
+<pre><code>#########       #########   
+#G......#       #.......#   
+#.E.#...#       #.E.#...#   E(38)
+#..##..G#       #..##...#   
+#...##..#  --&gt;  #...##..#   
+#...#...#       #...#...#   
+#.G...G.#       #.......#   
+#.....G.#       #.......#   
+#########       #########   
+
+Combat ends after 30 full rounds
+Elves win with 38 total hit points left
+Outcome: 30 * 38 = <em>1140</em>
+</code></pre>
+<p>After increasing the Elves' attack power until it is just barely enough for them to win without any Elves dying, <em>what is the outcome</em> of the combat described in your puzzle input?</p>
+</article>
+<p>Your puzzle answer was <code>95764</code>.</p><p class="day-success">Both parts of this puzzle are complete! They provide two gold stars: **</p>
+<p>At this point, you should <a href="https://adventofcode.com/2018">return to your advent calendar</a> and try another puzzle.</p>
+<p>If you still want to see it, you can <a href="https://adventofcode.com/2018/day/15/input" target="_blank">get your puzzle input</a>.</p>
 <p>You can also <span class="share">[Share<span class="share-content">on
-  <a href="https://twitter.com/intent/tweet?text=%22Beverage+Bandits%22+%2D+Day+15+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F15&amp;related=ericwastl&amp;hashtags=AdventOfCode" target="_blank">Twitter</a>
-  <a href="http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F15&amp;title=%22Beverage+Bandits%22+%2D+Day+15+%2D+Advent+of+Code+2018" target="_blank">Reddit</a></span>]</span> this puzzle.</p>
+  <a href="https://twitter.com/intent/tweet?text=I%27ve+completed+%22Beverage+Bandits%22+%2D+Day+15+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F15&amp;related=ericwastl&amp;hashtags=AdventOfCode" target="_blank">Twitter</a>
+  <a href="http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F15&amp;title=I%27ve+completed+%22Beverage+Bandits%22+%2D+Day+15+%2D+Advent+of+Code+2018" target="_blank">Reddit</a></span>]</span> this puzzle.</p>
 </main>
 
 <!-- ga -->
